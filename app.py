@@ -1,33 +1,34 @@
-{
- "cells": [
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "802bb432-29b6-469d-b732-16674a6f199a",
-   "metadata": {},
-   "outputs": [],
-   "source": []
-  }
- ],
- "metadata": {
-  "kernelspec": {
-   "display_name": "Python 3 (ipykernel)",
-   "language": "python",
-   "name": "python3"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 3
-   },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython3",
-   "version": "3.11.7"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 5
-}
+import pandas as pd
+from dash import Dash, html, dcc
+
+# Load the combined and cleaned sales data
+df = pd.read_csv('pink_morsel_sales.csv')
+
+# Convert the 'date' column to datetime to ensure proper sorting
+df['date'] = pd.to_datetime(df['date'])
+
+# Create a Dash app instance
+app = Dash(__name__)
+
+# Define the app's layout
+app.layout = html.Div(children=[
+    html.H1(children='Pink Morsel Sales Analysis'),
+
+    dcc.Graph(
+        id='sales-line-chart',
+        figure={
+            'data': [
+                {'x': df['date'], 'y': df['sales'], 'type': 'line', 'name': 'Pink Morsel Sales'}
+            ],
+            'layout': {
+                'title': 'Daily Sales of Pink Morsels',
+                'xaxis': {'title': 'Date'},
+                'yaxis': {'title': 'Sales ($)'}
+            }
+        }
+    )
+])
+
+# Run the app
+if __name__ == '__main__':
+    app.run(debug=True)
